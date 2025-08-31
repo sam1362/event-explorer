@@ -22,48 +22,82 @@ export default function EntertainmentPage() {
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [events, setEvents] = useState<EventType[]>([]);
   const [sortOption, setSortOption] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchCitiesAndEvents = async () => {
+      setLoading(true);
+      setError("");
+
       try {
-        const res = await fetch("/api/events");
+        const res = await fetch("/api/events", { signal: controller.signal });
         const data = await res.json();
-        const events = data._embedded?.events || [];
+        const events: EventType[] = data._embedded?.events || [];
 
         const uniqueCities: string[] = Array.from(
           new Set(
             events
-              .map((e: EventType) => e._embedded?.venues?.[0]?.city?.name)
-              .filter(Boolean) as string[]
+              .map((e) => e._embedded?.venues?.[0]?.city?.name?.trim())
+              .filter((city): city is string => !!city && typeof city === "string")
           )
         );
-        setCities(uniqueCities);
-        
 
-        // نمایش همه‌ی eventها وقتی هنوز شهری انتخاب نشده
+        setCities(uniqueCities);
         setEvents(events);
       } catch (err) {
-        console.error("Error fetching cities and events", err);
+        if (err instanceof DOMException && err.name === "AbortError") {
+          console.log("Fetch aborted");
+        } else {
+          console.error("Error fetching cities and events", err);
+          setError("Failed to load events. Please try again later.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCitiesAndEvents();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   useEffect(() => {
     if (!selectedCity) return;
 
+    const controller = new AbortController();
+
     const fetchEventsByCity = async () => {
+      setLoading(true);
+      setError("");
+
       try {
-        const res = await fetch(`/api/events/${selectedCity}`);
+        const res = await fetch(`/api/events/${selectedCity}`, {
+          signal: controller.signal,
+        });
         const data = await res.json();
         setEvents(data._embedded?.events || []);
       } catch (err) {
-        console.error("Error fetching events by city", err);
+        if (err instanceof DOMException && err.name === "AbortError") {
+          console.log("City fetch aborted");
+        } else {
+          console.error("Error fetching events by city", err);
+          setError("Failed to load events for selected city.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchEventsByCity();
+
+    return () => {
+      controller.abort();
+    };
   }, [selectedCity]);
 
   const sortedEvents = useMemo(() => {
@@ -82,7 +116,7 @@ export default function EntertainmentPage() {
           new Date(a.dates.start.localDate).getTime()
       );
     } else if (sortOption === "Disability-friendly") {
-      sorted = sorted.sort((a, b) => {
+      sorted.sort((a, b) => {
         const aAccessible = a._embedded?.venues?.[0]?.name
           ?.toLowerCase()
           .includes("accessible");
@@ -131,10 +165,22 @@ export default function EntertainmentPage() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="text-red-500 text-center mb-4">{error}</div>
+        )}
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="text-center text-gray-500 italic mb-4">
+            Loading events...
+          </div>
+        )}
+
         {/* Event Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedEvents.length === 0 ? (
-            <p className="text-gray-500">No events found.</p>
+          {!loading && sortedEvents.length === 0 ? (
+            <p className="text-gray-500 italic">No events found.</p>
           ) : (
             sortedEvents.map((event) => (
               <EventCard
