@@ -30,14 +30,15 @@ export default function EntertainmentPage() {
         const data = await res.json();
         const events = data._embedded?.events || [];
 
-        const uniqueCities = Array.from(
+        const uniqueCities: string[] = Array.from(
           new Set(
             events
               .map((e: EventType) => e._embedded?.venues?.[0]?.city?.name)
-              .filter(Boolean)
+              .filter(Boolean) as string[]
           )
         );
         setCities(uniqueCities);
+        
 
         // نمایش همه‌ی eventها وقتی هنوز شهری انتخاب نشده
         setEvents(events);
