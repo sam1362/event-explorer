@@ -1,5 +1,4 @@
 
-
 # Event Explorer
 
 A **full-stack project** for discovering and browsing events.
@@ -10,7 +9,6 @@ A **full-stack project** for discovering and browsing events.
 
 * **API used:** [Ticketmaster Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/)
 * **What I built:**
-
   * A .NET 9 backend (`EventsApi`) that fetches events from Ticketmaster securely (API key kept on server).
   * A Next.js 14 frontend (`event-explorer`) that displays events with city filtering, sorting, and event cards.
 
@@ -28,10 +26,11 @@ A **full-stack project** for discovering and browsing events.
 
 ```
 event-explorer-project/
-│── EventsApi/           # Backend (.NET 9 Web API)
-│── event-explorer/      # Frontend (Next.js)
-│── .gitignore
-│── README.md
+├── event-explorer/       # Frontend (Next.js)
+├── EventsApi/            # Backend (.NET 9 Web API)
+├── EventsApiTest/        # Backend tests (xUnit)
+├── EventsApi.sln         # Solution file
+└── README.md
 ```
 
 ---
@@ -45,7 +44,10 @@ event-explorer-project/
 
 ### Configuration
 
-Add your Ticketmaster API key to `appsettings.Development.json` inside `EventsApi`:
+To enable event data fetching from Ticketmaster, make sure the backend is properly configured:
+
+1. Open `EventsApi/appsettings.Development.json`.
+2. Add your **Ticketmaster API key** under the `Ticketmaster` section:
 
 ```json
 {
@@ -59,7 +61,7 @@ Add your Ticketmaster API key to `appsettings.Development.json` inside `EventsAp
 
 ```bash
 cd EventsApi
-dotnet run   
+dotnet run
 ```
 
 By default, the API runs on:
@@ -95,46 +97,27 @@ npm run dev
 The app will be available at:
 `http://localhost:3000`
 
-The frontend communicates directly with the backend (`EventsApi`) and does not require its own API key.
+The frontend communicates directly with the backend (`EventsApi`) and does not require its own API key.  
 Currently only the **Entertainment page** is functional (city dropdown + sorting). Other pages are under construction.
 
 ---
 
-👌 عالی، گرفتم چی می‌خوای.
-تو الان دو دسته تست داری:
+## 🧪 Testing
 
-* **Backend (xUnit)** → ‌دو فایل:
-
-  * `EventsControllerTests` (تست مثبت)
-  * `EventsControllerNegativeTests` (تست منفی)
-
-* **Frontend (Jest + React Testing Library)** → دو فایل:
-
-  * `CategoryCard.test` (تست مثبت)
-  * `NegativeCategoryCard.test` (تست منفی)
-
-من باید اینارو توی بخش **Testing** توضیح بدم با اصطلاحات درست (Positive test / Negative test).
-
----
-
-## Testing
-
-Both frontend and backend include automated unit tests, covering **positive** (expected behavior) and **negative** (handling incorrect input) scenarios.
+Both frontend and backend include automated unit tests, covering **expected behavior** and **handling incorrect input** scenarios.
 
 ### Backend (xUnit)
 
 ```bash
-cd EventsApi
+cd EventsApiTest
 dotnet test
-````
+```
 
-* **EventsControllerTests** → Positive tests
-
-  * Ensures `/api/events` returns an **Ok** response with data.
+* **EventsControllerTests** → Positive tests  
+  * Ensures `/api/events` returns an **Ok** response with data.  
   * Ensures `/api/events?city=Oslo` returns an **Ok** response with filtered results.
 
-* **EventsControllerNegativeTests** → Negative tests
-
+* **EventsControllerNegativeTests** → Negative tests  
   * Verifies the API responds safely to invalid or unexpected input (e.g., when the city parameter is invalid or missing).
 
 ---
@@ -143,29 +126,32 @@ dotnet test
 
 ```bash
 cd event-explorer
-npm run test
+npm test
 ```
 
-* **CategoryCard.test** → Positive tests
+> If needed, install testing dependencies first:
 
-  * Confirms the component renders correctly with given props (title + image).
+```bash
+npm install --save-dev jest @testing-library/react @testing-library/jest-dom
+```
+
+* **CategoryCard.test** → Positive tests  
+  * Confirms the component renders correctly with given props (title + image).  
   * Confirms clicking the card triggers navigation via `router.push()`.
 
-* **NegativeCategoryCard.test** → Negative tests
-
+* **NegativeCategoryCard.test** → Negative tests  
   * Verifies the component behaves gracefully when props are missing or invalid (e.g., no image or empty title).
 
-```
 ---
 
-## Author
+## 👩‍💻 Author
 
 * Samaneh ([@sam1362](https://github.com/sam1362))
 
 ---
 
-## License
+## 📄 License
 
 This project is open-source and free to use. Contributions are welcome!
 
-
+---

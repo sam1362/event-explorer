@@ -9,7 +9,7 @@ jest.mock("next/navigation", () => ({
 describe("CategoryCard - Negative Scenarios", () => {
   it("should not crash when title is missing", () => {
     render(<CategoryCard image="/test.jpg" title="" link="/music" />);
-    expect(screen.getByAltText("")).toBeInTheDocument(); // alt از title گرفته می‌شه
+    expect(screen.getByAltText("")).toBeInTheDocument(); 
   });
 
   it("should show placeholder image when image is missing", () => {

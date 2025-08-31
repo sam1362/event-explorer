@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace EventsApi.Tests
 {
@@ -15,7 +17,7 @@ namespace EventsApi.Tests
         [Fact]
         public async Task GetEvents_WhenApiFails_ReturnsErrorStatus()
         {
-            // Arrange: ساختن HttpClient ساختگی که پاسخ 500 می‌ده
+         
             var mockHandler = new Mock<HttpMessageHandler>();
             mockHandler
                 .Protected()
@@ -30,8 +32,19 @@ namespace EventsApi.Tests
                     Content = new StringContent("Something went wrong")
                 });
 
-            var httpClient = new HttpClient(mockHandler.Object);
-            var controller = new EventsController(httpClient);
+            var httpClient = new HttpClient(mockHandler.Object); 
+
+           
+            var inMemorySettings = new Dictionary<string, string>
+            {
+                { "Ticketmaster:ApiKey", "fake-api-key-for-test" }
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            var controller = new EventsController(httpClient, configuration);
 
             // Act
             var result = await controller.GetEvents();
