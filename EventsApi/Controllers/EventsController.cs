@@ -23,15 +23,20 @@ namespace EventsApi.Controllers
                 ? $"https://app.ticketmaster.com/discovery/v2/events.json?apikey={apiKey}&size=100&countryCode=NO"
                 : $"https://app.ticketmaster.com/discovery/v2/events.json?apikey={apiKey}&size=100&countryCode=NO&city={city}";
 
-            try
-            {
-                var response = await _httpClient.GetStringAsync(url);
-                return Content(response, "application/json");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = "Failed to fetch events", details = ex.Message });
-            }
+           try
+{
+    var response = await _httpClient.GetAsync(url);
+
+    if (!response.IsSuccessStatusCode)
+        return StatusCode((int)response.StatusCode, "Failed to fetch events");
+
+     var content = await response.Content.ReadAsStringAsync();
+        return Content(content, "application/json");
         }
+       catch (Exception ex)
+    {
+     return StatusCode(500, "Unexpected error occurred while fetching events");
     }
+        }
+     }
 }

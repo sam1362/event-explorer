@@ -1,11 +1,11 @@
 import { Star } from "lucide-react";
 
 interface EventCardProps {
-  title: string;
-  date: string;
-  venue: string;
-  time: string;
-  category: string;
+  title?: string;
+  date?: string;
+  venue?: string;
+  time?: string;
+  category?: string;
   image?: string;
   url?: string;
 }
@@ -25,28 +25,30 @@ export default function EventCard({
       <div className="relative">
         <img
           src={image || "/placeholder.jpg"}
-          alt={title}
+          alt={title || "Event image"}
           className="w-full h-40 object-cover bg-gray-200"
         />
-        {/* star up right */}
         <button className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100">
           <Star size={18} className="text-gray-500" />
         </button>
-        {/* Badge below imange */}
-        <span className="absolute bottom-0 left-0 text-xs font-medium bg-yellow-400 text-gray-800 px-2 py-1 rounded-tr-lg">
-          {category}
-        </span>
+        {category ? (
+          <span className="absolute bottom-0 left-0 text-xs font-medium bg-yellow-400 text-gray-800 px-2 py-1 rounded-tr-lg">
+            {category}
+          </span>
+        ) : null}
       </div>
 
       {/* texts */}
       <div className="p-4">
         <h2 className="text-base font-semibold text-gray-900 line-clamp-2">
-          {title}
+          {title || "Event name not available"}
         </h2>
         <p className="text-sm text-gray-600 mt-1">
-          {date} | {venue}
+          {date || "Date not available"} | {venue || "Venue not available"}
         </p>
-        <p className="text-sm text-gray-600">{time}</p>
+        <p className="text-sm text-gray-600">
+          {time || "Time not available"}
+        </p>
       </div>
 
       {/* clickable */}
@@ -63,4 +65,3 @@ export default function EventCard({
     </div>
   );
 }
-
