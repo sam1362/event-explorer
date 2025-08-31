@@ -188,7 +188,6 @@ export default function EntertainmentPage() {
                 title={event.name}
                 date={event.dates.start.localDate}
                 venue={event._embedded?.venues?.[0]?.name || "Unknown Venue"}
-                city={event._embedded?.venues?.[0]?.city?.name || ""}
                 time={event.dates.start.localTime || "N/A"}
                 category="Entertainment"
                 image={
