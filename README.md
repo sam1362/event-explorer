@@ -100,22 +100,62 @@ Currently only the **Entertainment page** is functional (city dropdown + sorting
 
 ---
 
+👌 عالی، گرفتم چی می‌خوای.
+تو الان دو دسته تست داری:
+
+* **Backend (xUnit)** → ‌دو فایل:
+
+  * `EventsControllerTests` (تست مثبت)
+  * `EventsControllerNegativeTests` (تست منفی)
+
+* **Frontend (Jest + React Testing Library)** → دو فایل:
+
+  * `CategoryCard.test` (تست مثبت)
+  * `NegativeCategoryCard.test` (تست منفی)
+
+من باید اینارو توی بخش **Testing** توضیح بدم با اصطلاحات درست (Positive test / Negative test).
+
+---
+
 ## Testing
 
-### Backend
+Both frontend and backend include automated unit tests, covering **positive** (expected behavior) and **negative** (handling incorrect input) scenarios.
+
+### Backend (xUnit)
 
 ```bash
 cd EventsApi
 dotnet test
-```
+````
 
-### Frontend
+* **EventsControllerTests** → Positive tests
+
+  * Ensures `/api/events` returns an **Ok** response with data.
+  * Ensures `/api/events?city=Oslo` returns an **Ok** response with filtered results.
+
+* **EventsControllerNegativeTests** → Negative tests
+
+  * Verifies the API responds safely to invalid or unexpected input (e.g., when the city parameter is invalid or missing).
+
+---
+
+### Frontend (Jest + React Testing Library)
 
 ```bash
 cd event-explorer
 npm run test
 ```
 
+* **CategoryCard.test** → Positive tests
+
+  * Confirms the component renders correctly with given props (title + image).
+  * Confirms clicking the card triggers navigation via `router.push()`.
+
+* **NegativeCategoryCard.test** → Negative tests
+
+  * Verifies the component behaves gracefully when props are missing or invalid (e.g., no image or empty title).
+
+```
 ---
 
 ## Author
