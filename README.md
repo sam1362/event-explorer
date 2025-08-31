@@ -17,8 +17,8 @@ A **full-stack project** for discovering and browsing events.
 
   * Add more event categories beyond entertainment.
   * Add more filters (by category, date, price, etc.).
-  * Create more pages to show additional event types.
-  * Make the search bar on the home page fully functional.
+  * Debounce for search.
+  * Apply Pagination or Infinite Scroll.
   * Add search by date and keyword.
   * Write more unit tests for both frontend and backend.
 
