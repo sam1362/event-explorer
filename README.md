@@ -12,13 +12,6 @@ A **full-stack project** for discovering and browsing events.
   * A .NET 9 backend (`EventsApi`) that fetches events from Ticketmaster securely (API key kept on server).
   * A Next.js 14 frontend (`event-explorer`) that displays events with city filtering, sorting, and event cards.
 
-* **Future improvements (with more time):**
-  * Add more event categories beyond entertainment.
-  * Add more filters (by category, date, price, etc.).
-  * Debounce for search.
-  * Apply Pagination or Infinite Scroll.
-  * Add search by date and keyword.
-  * Write more unit tests for both frontend and backend.
 
 ---
 
@@ -143,6 +136,13 @@ npm install --save-dev jest @testing-library/react @testing-library/jest-dom
   * Verifies the component behaves gracefully when props are missing or invalid (e.g., no image or empty title).
 
 ---
+* **Future improvements (with more time):**
+  * Add more event categories beyond entertainment.
+  * Add more filters (by category, date, price, etc.).
+  * Debounce for search.
+  * Apply Pagination or Infinite Scroll.
+  * Add search by date and keyword.
+  * Write more unit tests for both frontend and backend.
 
 ## 👩‍💻 Author
 

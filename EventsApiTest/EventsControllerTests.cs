@@ -26,7 +26,6 @@ namespace EventsApi.Tests
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            // Mock کردن پاسخ از HttpClient
             var mockHandler = new Mock<HttpMessageHandler>();
             mockHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>(

@@ -3,21 +3,27 @@
 import { useRouter } from "next/navigation";
 
 interface CategoryCardProps {
-  image: string;
+  image?: string;
   title: string;
-  link: string; 
+  link?: string; 
 }
 
 export default function CategoryCard({ image, title, link }: CategoryCardProps) {
   const router = useRouter();
 
+  const handleClick = () => {
+    if (link) {
+      router.push(link);
+    }
+  };
+
   return (
     <div
-      onClick={() => router.push(link)} //
+      onClick={handleClick}
       className="cursor-pointer"
     >
       <img
-        src={image}
+        src={image || "/placeholder.jpg"}
         alt={title}
         className="rounded-full w-28 h-28 mx-auto object-cover shadow-md hover:scale-105 transition"
       />
@@ -25,3 +31,4 @@ export default function CategoryCard({ image, title, link }: CategoryCardProps) 
     </div>
   );
 }
+
