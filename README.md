@@ -1,35 +1,50 @@
 
+
 # Event Explorer
 
-A **full-stack project** for discovering and browsing events.  
-It includes:
+A **full-stack project** for discovering and browsing events.
 
-- **Backend (EventsApi)** → built with **.NET 9 Web API**  
-- **Frontend (event-explorer)** → built with **Next.js 14, TypeScript, TailwindCSS**
+---
+
+## Project Overview
+
+* **API used:** [Ticketmaster Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/)
+* **What I built:**
+
+  * A .NET 9 backend (`EventsApi`) that fetches events from Ticketmaster securely (API key kept on server).
+  * A Next.js 14 frontend (`event-explorer`) that displays events with city filtering, sorting, and event cards.
+* **Future improvements (with more time):**
+
+  * Add more event categories beyond entertainment.
+  * Add more filters (by category, date, price, etc.).
+  * Create more pages to show additional event types.
+  * Make the search bar on the home page fully functional.
+  * Add search by date and keyword.
+  * Write more unit tests for both frontend and backend.
 
 ---
 
 ## Project Structure
 
 ```
-
 event-explorer-project/
 │── EventsApi/           # Backend (.NET 9 Web API)
 │── event-explorer/      # Frontend (Next.js)
 │── .gitignore
 │── README.md
-
-````
+```
 
 ---
 
 ## Backend (EventsApi)
 
 ### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- Internet access for NuGet packages
+
+* [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+* Internet access for NuGet packages
 
 ### Configuration
+
 Add your Ticketmaster API key to `appsettings.Development.json` inside `EventsApi`:
 
 ```json
@@ -38,15 +53,13 @@ Add your Ticketmaster API key to `appsettings.Development.json` inside `EventsAp
     "ApiKey": "your_api_key_here"
   }
 }
-````
+```
 
 ### Run the API
 
 ```bash
 cd EventsApi
-dotnet restore   # restore dependencies
-dotnet build     # build the project
-dotnet run       # run the API
+dotnet run   
 ```
 
 By default, the API runs on:
@@ -82,8 +95,9 @@ npm run dev
 The app will be available at:
 `http://localhost:3000`
 
-The frontend communicates directly with the backend (`EventsApi`) and does not require its my API key.
-In this phase only "Entertainment card" in the home page works. Other pages are under construction.
+The frontend communicates directly with the backend (`EventsApi`) and does not require its own API key.
+Currently only the **Entertainment page** is functional (city dropdown + sorting). Other pages are under construction.
+
 ---
 
 ## Testing
@@ -101,6 +115,7 @@ dotnet test
 cd event-explorer
 npm run test
 ```
+
 ---
 
 ## Author
@@ -113,6 +128,4 @@ npm run test
 
 This project is open-source and free to use. Contributions are welcome!
 
-````
 
----
