@@ -83,7 +83,7 @@ The app will be available at:
 `http://localhost:3000`
 
 The frontend communicates directly with the backend (`EventsApi`) and does not require its my API key.
-
+In this phase only "Entertainment card" in the home page works. Other pages are under construction.
 ---
 
 ## Testing
