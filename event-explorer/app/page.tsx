@@ -39,12 +39,12 @@ export default function Home() {
             Explore Categories
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-            {CATEGORIES.map((cat) => (
+          {CATEGORIES.map((cat, index) => (
               <CategoryCard
-                key={cat.link}
+                key={cat.link + cat.title + index} 
                 image={cat.image}
                 title={cat.title}
-                link={cat.link}
+                link={cat.link} 
               />
             ))}
   </div>

@@ -9,21 +9,21 @@ export const CATEGORIES = [
   {
     image: "/cat-sports.jpg",
     title: "Sports & Fitness",
-    link: "/sports",
+    link: "/under-construction",
   },
   {
     image: "/cat-travel.jpg",
     title: "Travel & Adventure",
-    link: "/travel",
+    link: "/under-construction",
   },
   {
     image: "/cat-business.jpg",
     title: "Educational & Business",
-    link: "/business",
+    link: "/under-construction",
   },
   {
     image: "/cat-arts.jpg",
     title: "Cultural & Arts",
-    link: "/arts",
+    link: "/under-construction",
   },
 ];

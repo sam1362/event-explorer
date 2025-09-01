@@ -4,9 +4,9 @@ import Link from "next/link";
 
 const ROUTES = [
   { href: "/", title: "Home" },
-  { href: "/events", title: "Events" },
-  { href: "/about", title: "About" },
-  { href: "/contact", title: "Contact" },
+  { href: "/under-construction", title: "Events" },
+  { href: "/under-construction", title: "About" },
+  { href: "/under-construction", title: "Contact" },
 ];
 
 export default function Navbar() {
@@ -18,7 +18,7 @@ export default function Navbar() {
       {/* menu */}
       <ul className="flex gap-6 font-medium">
         {ROUTES.map((route) => (
-          <li key={route.href}>
+          <li key={route.href + route.title}>
             <Link
               href={route.href}
               className="hover:text-teal-300 border-b-2 border-transparent hover:border-teal-400 transition"
