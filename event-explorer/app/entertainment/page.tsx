@@ -75,27 +75,32 @@ export default function EntertainmentPage() {
           </span>
         </div>
 
-        <div className="mb-8 flex items-end justify-between">
-          <div className="w-[377px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Choose the City
-            </label>
-            <CityDropdown
-              cities={allCities}
-              selectedCity={selectedCity}
-              onChange={(city) => {
-                setSelectedCity(city);
-              }}
-            />
-          </div>
+  <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+  {/* City Dropdown */}
+  <div className="w-full sm:w-[377px]">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Choose the City
+    </label>
+    <CityDropdown
+      cities={allCities}
+      selectedCity={selectedCity}
+      onChange={(city) => setSelectedCity(city)}
+    />
+  </div>
 
-          <div className="w-[220px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Sort by
-            </label>
-            <SortDropdown onChange={(sort) => setSortOption(sort)} />
-          </div>
-        </div>
+ {/* Sort Dropdown */}
+<div className="w-full sm:w-[220px] flex flex-col justify-start">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Sort by
+  </label>
+  <div className="self-start sm:self-start w-full">
+    <SortDropdown onChange={(sort) => setSortOption(sort)} />
+  </div>
+</div>
+</div>
+
+
+
 
         {error && (
           <div className="text-red-500 text-center mb-4">

@@ -1,23 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
 
 interface CityDropdownProps {
   cities?: string[];
+  selectedCity?: string;
   onChange?: (city: string) => void;
 }
 
 export default function CityDropdown({
   cities = [],
+  selectedCity = "",
   onChange = () => {},
 }: CityDropdownProps) {
-  const [selectedCity, setSelectedCity] = useState("");
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-//query is not empty
+  // Filter cities based on query
   const filteredCities =
     query === "" || !isOpen
       ? cities
@@ -25,22 +26,21 @@ export default function CityDropdown({
           city.toLowerCase().includes(query.toLowerCase())
         );
 
-  //select new city
+  // Handle select
   const handleSelect = (city: string) => {
-    setSelectedCity(city);
     onChange(city);
     setQuery("");
     setIsOpen(false);
   };
 
-  // open dropdown
+  // Open dropdown
   const handleOpen = () => {
     setIsOpen(true);
     setQuery("");
   };
 
   return (
-    <div className="relative w-[377px]">
+    <div className="w-full sm:w-[377px]">
       <Combobox value={selectedCity} onChange={handleSelect}>
         <div className="relative">
           {/* Input */}
@@ -53,7 +53,7 @@ export default function CityDropdown({
           />
 
           {/* Icon */}
-          <Combobox.Button 
+          <Combobox.Button
             className="absolute inset-y-0 right-0 flex items-center pr-3"
             onClick={handleOpen}
           >
@@ -61,9 +61,9 @@ export default function CityDropdown({
           </Combobox.Button>
 
           {/* Dropdown */}
-          <Combobox.Options className="absolute mt-1 w-full border rounded-lg bg-background shadow-lg z-50 max-h-60 overflow-auto">
+          <Combobox.Options className="absolute mt-1 w-full border rounded-lg bg-white shadow-lg z-50 max-h-60 overflow-auto focus:outline-none">
             {filteredCities.length === 0 ? (
-              <div className="px-4 py-2 text-muted-foreground italic">
+              <div className="px-4 py-2 text-gray-500 italic">
                 No cities found
               </div>
             ) : (
@@ -71,9 +71,11 @@ export default function CityDropdown({
                 <Combobox.Option
                   key={city}
                   value={city}
-                  className={({ active }) =>
-                    `px-4 py-2 cursor-pointer ${
-                      active ? "bg-primary text-primary-foreground" : "text-foreground"
+                  className={({ active, selected }) =>
+                    `px-4 py-2 cursor-pointer select-none transition-colors ${
+                      active
+                        ? "bg-teal-600 text-white" 
+                        : "text-gray-700"
                     }`
                   }
                 >
