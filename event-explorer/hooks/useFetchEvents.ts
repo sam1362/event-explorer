@@ -7,25 +7,29 @@ export function useFetchEvents(city?: string) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    setError(null);
+    const controller = new AbortController(); 
+    const signal = controller.signal;
 
     async function load() {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await getEvents(city);
-        if (isMounted) setData(res);
-      } catch (err) {
-        if (isMounted) setError(err as Error);
+        const res = await getEvents(city, signal);
+        setData(res);
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          setError(err);
+        }
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     }
 
     load();
 
+    // abortController
     return () => {
-      isMounted = false;
+      controller.abort();
     };
   }, [city]);
 

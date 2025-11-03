@@ -75,7 +75,7 @@ export default function CityDropdown({
                     `px-4 py-2 cursor-pointer select-none transition-colors ${
                       active
                         ? "bg-teal-600 text-white" 
-                        : "text-gray-700"
+                        : "text-gray-900"
                     }`
                   }
                 >
