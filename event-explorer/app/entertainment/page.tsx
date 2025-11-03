@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import CityDropdown from "../components/CityDropdown";
 import SortDropdown from "../components/SortDropdown";
 import EventCard from "../components/EventCard";
+import { useFetchEvents } from "@/hooks/useFetchEvents";
 
 interface EventType {
   id: string;
   name: string;
   dates: { start: { localDate: string; localTime?: string } };
   _embedded?: {
-    venues?: { name: string; city?: { name: string } }[];
+    venues?: { name: string; city?: { name?: string } }[];
   };
   url: string;
   images?: { url: string }[];
@@ -20,88 +21,31 @@ interface EventType {
 export default function EntertainmentPage() {
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [events, setEvents] = useState<EventType[]>([]);
   const [sortOption, setSortOption] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
+  // ✅ Hook برای گرفتن داده‌ها از backend (با مدیریت خطا و لودینگ)
+  const { data, loading, error } = useFetchEvents(selectedCity, sortOption);
+
+  // ✅ استخراج لیست شهرها از داده‌ها
   useEffect(() => {
-    const controller = new AbortController();
+    if (data && Array.isArray(data._embedded?.events)) {
+      const events: EventType[] = data._embedded.events;
+      const uniqueCities = Array.from(
+        new Set(
+          events
+            .map((e) => e._embedded?.venues?.[0]?.city?.name?.trim())
+            .filter((city): city is string => !!city)
+        )
+      );
+      setCities(uniqueCities);
+    }
+  }, [data]);
 
-    const fetchCitiesAndEvents = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const res = await fetch("/api/events", { signal: controller.signal });
-        const data = await res.json();
-        const events: EventType[] = data._embedded?.events || [];
-
-        const uniqueCities: string[] = Array.from(
-          new Set(
-            events
-              .map((e) => e._embedded?.venues?.[0]?.city?.name?.trim())
-              .filter((city): city is string => !!city && typeof city === "string")
-          )
-        );
-
-        setCities(uniqueCities);
-        setEvents(events);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") {
-          console.log("Fetch aborted");
-        } else {
-          console.error("Error fetching cities and events", err);
-          setError("Failed to load events. Please try again later.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCitiesAndEvents();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!selectedCity) return;
-
-    const controller = new AbortController();
-
-    const fetchEventsByCity = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const res = await fetch(`/api/events/${selectedCity}`, {
-          signal: controller.signal,
-        });
-        const data = await res.json();
-        setEvents(data._embedded?.events || []);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") {
-          console.log("City fetch aborted");
-        } else {
-          console.error("Error fetching events by city", err);
-          setError("Failed to load events for selected city.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventsByCity();
-
-    return () => {
-      controller.abort();
-    };
-  }, [selectedCity]);
-
+  // ✅ مرتب‌سازی داده‌ها براساس گزینه انتخاب‌شده
   const sortedEvents = useMemo(() => {
-    let sorted = [...events];
+    if (!data || !Array.isArray(data._embedded?.events)) return [];
+
+    let sorted = [...data._embedded.events];
 
     if (sortOption === "Date (ascending)") {
       sorted.sort(
@@ -128,7 +72,7 @@ export default function EntertainmentPage() {
     }
 
     return sorted;
-  }, [events, sortOption]);
+  }, [data, sortOption]);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -167,7 +111,9 @@ export default function EntertainmentPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="text-red-500 text-center mb-4">{error}</div>
+          <div className="text-red-500 text-center mb-4">
+            {error.message || "Failed to load events."}
+          </div>
         )}
 
         {/* Loading Spinner */}
