@@ -1,32 +1,24 @@
 import { useState, useEffect } from "react";
 import { getEvents } from "@/lib/api";
 
-/**
- * Custom React hook for fetching events data from backend
- * Handles loading and error states automatically.
- */
-export function useFetchEvents(city?: string, sort?: string) {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export function useFetchEvents(city?: string) {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    let isMounted = true; // prevent state updates on unmounted component
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
 
     async function load() {
       try {
-        const res = await getEvents(city, sort);
-        if (isMounted) {
-          setData(res);
-        }
-      } catch (e) {
-        if (isMounted) {
-          setError(e as Error);
-        }
+        const res = await getEvents(city);
+        if (isMounted) setData(res);
+      } catch (err) {
+        if (isMounted) setError(err as Error);
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     }
 
@@ -35,7 +27,7 @@ export function useFetchEvents(city?: string, sort?: string) {
     return () => {
       isMounted = false;
     };
-  }, [city, sort]);
+  }, [city]);
 
   return { data, loading, error };
 }

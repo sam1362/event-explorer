@@ -12,24 +12,25 @@ interface EventType {
   name: string;
   dates: { start: { localDate: string; localTime?: string } };
   _embedded?: {
-    venues?: { name: string; city?: { name?: string } }[];
+    venues?: { name?: string; city?: { name?: string } }[];
   };
   url: string;
   images?: { url: string }[];
 }
 
 export default function EntertainmentPage() {
-  const [cities, setCities] = useState<string[]>([]);
+  const [allCities, setAllCities] = useState<string[]>([]); 
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("");
 
-  // ✅ Hook برای گرفتن داده‌ها از backend (با مدیریت خطا و لودینگ)
-  const { data, loading, error } = useFetchEvents(selectedCity, sortOption);
+  const { data, loading, error } = useFetchEvents(selectedCity);
+  const events: EventType[] = Array.isArray(data?._embedded?.events)
+    ? data._embedded.events
+    : [];
 
-  // ✅ استخراج لیست شهرها از داده‌ها
+  //save cities
   useEffect(() => {
-    if (data && Array.isArray(data._embedded?.events)) {
-      const events: EventType[] = data._embedded.events;
+    if (!selectedCity && events.length > 0) {
       const uniqueCities = Array.from(
         new Set(
           events
@@ -37,16 +38,13 @@ export default function EntertainmentPage() {
             .filter((city): city is string => !!city)
         )
       );
-      setCities(uniqueCities);
+      setAllCities(uniqueCities);
     }
-  }, [data]);
+  }, [events, selectedCity]);
 
-  // ✅ مرتب‌سازی داده‌ها براساس گزینه انتخاب‌شده
+  // sort
   const sortedEvents = useMemo(() => {
-    if (!data || !Array.isArray(data._embedded?.events)) return [];
-
-    let sorted = [...data._embedded.events];
-
+    const sorted = [...events];
     if (sortOption === "Date (ascending)") {
       sorted.sort(
         (a, b) =>
@@ -59,45 +57,35 @@ export default function EntertainmentPage() {
           new Date(b.dates.start.localDate).getTime() -
           new Date(a.dates.start.localDate).getTime()
       );
-    } else if (sortOption === "Disability-friendly") {
-      sorted.sort((a, b) => {
-        const aAccessible = a._embedded?.venues?.[0]?.name
-          ?.toLowerCase()
-          .includes("accessible");
-        const bAccessible = b._embedded?.venues?.[0]?.name
-          ?.toLowerCase()
-          .includes("accessible");
-        return aAccessible === bAccessible ? 0 : aAccessible ? -1 : 1;
-      });
     }
-
     return sorted;
-  }, [data, sortOption]);
+  }, [events, sortOption]);
 
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
 
       <div className="p-10">
-        {/* Title + Counter */}
         <div className="flex flex-col items-center mb-6">
           <h1 className="text-3xl font-bold mb-2">Entertainment</h1>
           <span className="text-gray-700 font-medium">
             {selectedCity
               ? `Number of Events in ${selectedCity}: ${sortedEvents.length}`
-              : `Number of Entertainment: ${sortedEvents.length}`}
+              : `Total Events: ${sortedEvents.length}`}
           </span>
         </div>
 
-        {/* City + Sort */}
         <div className="mb-8 flex items-end justify-between">
           <div className="w-[377px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Choose the City
             </label>
             <CityDropdown
-              cities={cities}
-              onChange={(city) => setSelectedCity(city)}
+              cities={allCities}
+              selectedCity={selectedCity}
+              onChange={(city) => {
+                setSelectedCity(city);
+              }}
             />
           </div>
 
@@ -109,21 +97,17 @@ export default function EntertainmentPage() {
           </div>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="text-red-500 text-center mb-4">
             {error.message || "Failed to load events."}
           </div>
         )}
-
-        {/* Loading Spinner */}
         {loading && (
           <div className="text-center text-gray-500 italic mb-4">
             Loading events...
           </div>
         )}
 
-        {/* Event Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {!loading && sortedEvents.length === 0 ? (
             <p className="text-gray-500 italic">No events found.</p>
@@ -136,9 +120,7 @@ export default function EntertainmentPage() {
                 venue={event._embedded?.venues?.[0]?.name || "Unknown Venue"}
                 time={event.dates.start.localTime || "N/A"}
                 category="Entertainment"
-                image={
-                  event.images ? event.images[0].url : "/cat-entertainment.jpg"
-                }
+                image={event.images?.[0]?.url || "/cat-entertainment.jpg"}
                 url={event.url}
               />
             ))
