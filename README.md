@@ -106,11 +106,11 @@ cd EventsApiTest
 dotnet test
 ```
 
-* **EventsControllerTests** → Positive tests  
+* **EventsControllerTests** → Happy tests  
   * Ensures `/api/events` returns an **Ok** response with data.  
   * Ensures `/api/events?city=Oslo` returns an **Ok** response with filtered results.
 
-* **EventsControllerNegativeTests** → Negative tests  
+* **EventsControllerNegativeTests** → EdgeCase tests  
   * Verifies the API responds safely to invalid or unexpected input (e.g., when the city parameter is invalid or missing).
 
 ---
@@ -140,7 +140,6 @@ npm install --save-dev jest @testing-library/react @testing-library/jest-dom
   * Add more event categories beyond entertainment.
   * Add more filters (by category, date, price, etc.).
   * Debounce for search.
-  * Apply Pagination or Infinite Scroll.
   * Add search by date and keyword.
   * Write more unit tests for both frontend and backend.
 
