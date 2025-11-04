@@ -1,53 +1,55 @@
 import { useState, useEffect } from "react";
 import { getEvents } from "@/lib/api";
 
-//  Simple in-memory cache to store event data by city
+// Simple in-memory cache to store event data by city
 const cache: Record<string, any> = {};
 
 export function useFetchEvents(city?: string) {
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
+    // reset state immediately when city changes or page loads
+    setLoading(true);
+    setError(null);
+    setData(null);
+
     async function load() {
-      setError(null);
-
-      // If data for this city is already cached, use it immediately
-      const cacheKey = city || "all";
-      if (cache[cacheKey]) {
-        setData(cache[cacheKey]);
-        return;
-      }
-
-      setLoading(true);
       try {
-        //  Fetch data from API with AbortController signal
+        const cacheKey = city || "all";
+
+        // check cache first
+        if (cache[cacheKey]) {
+          setData(cache[cacheKey]);
+          setLoading(false);
+          return;
+        }
+
+        // fetch from API
         const res = await getEvents(city, signal);
 
-        //  Save data to cache for future use
+        // save to cache and update state
         cache[cacheKey] = res;
-
-        // Update state with fetched data
         setData(res);
       } catch (err: any) {
-        // Only set error if it’s not an aborted request
-        if (err.name !== "AbortError") setError(err);
+        if (err.name !== "AbortError") {
+          setError(err);
+        }
       } finally {
-        // Turn off loading state
         setLoading(false);
       }
     }
 
-    // Trigger data load
-    load();
+    // slight delay helps avoid race condition on first mount
+    const timer = setTimeout(load, 100);
 
-    // Abort fetch when component unmounts or city changes
     return () => {
       controller.abort();
+      clearTimeout(timer);
     };
   }, [city]);
 

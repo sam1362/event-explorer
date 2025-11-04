@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -35,7 +32,7 @@ export default function EntertainmentPage() {
     ? data._embedded.events
     : [];
 
-  // save unique cities
+  // Extract unique cities
   useEffect(() => {
     if (!selectedCity && events.length > 0) {
       const uniqueCities = Array.from(
@@ -49,7 +46,7 @@ export default function EntertainmentPage() {
     }
   }, [events, selectedCity]);
 
-  // sorting logic
+  // Sorting logic
   const sortedEvents = useMemo(() => {
     const sorted = [...events];
     if (sortOption === "Date (ascending)") {
@@ -68,7 +65,7 @@ export default function EntertainmentPage() {
     return sorted;
   }, [events, sortOption]);
 
-  // infinite scroll
+  // Infinite scroll
   useEffect(() => {
     if (inView && visibleCount < sortedEvents.length) {
       setVisibleCount((prev) => prev + 9);
@@ -80,6 +77,7 @@ export default function EntertainmentPage() {
       <Navbar />
 
       <div className="p-10">
+        {/* Title and Stats */}
         <div className="flex flex-col items-center mb-6">
           <h1 className="text-3xl font-bold mb-2">Entertainment</h1>
           <span className="text-gray-700 font-medium">
@@ -122,41 +120,41 @@ export default function EntertainmentPage() {
           </div>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="text-red-500 text-center mb-4">
-            {error.message || "Failed to load events."}
-          </div>
-        )}
-
-        {/* Loading Skeletons */}
-        {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-            {Array(9)
-              .fill(0)
-              .map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
-                >
-                  <div className="h-40 bg-gray-200 w-full" />
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 w-3/4 rounded" />
-                    <div className="h-3 bg-gray-200 w-1/2 rounded" />
-                    <div className="h-3 bg-gray-200 w-1/3 rounded" />
+        {/* Content Section */}
+        <div className="min-h-[300px]">
+          {loading ? (
+            //  Skeletons while loading
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+              {Array(9)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                  >
+                    <div className="h-40 bg-gray-200 w-full" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-4 bg-gray-200 w-3/4 rounded" />
+                      <div className="h-3 bg-gray-200 w-1/2 rounded" />
+                      <div className="h-3 bg-gray-200 w-1/3 rounded" />
+                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
-        )}
-
-        {/* Event Grid */}
-        {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedEvents.length === 0 ? (
-              <p className="text-gray-500 italic">No events found.</p>
-            ) : (
-              sortedEvents.slice(0, visibleCount).map((event) => (
+                ))}
+            </div>
+          ) : error ? (
+            // Error Message
+            <div className="text-red-500 text-center">
+              {error.message || "Failed to load events."}
+            </div>
+          ) : sortedEvents.length === 0 ? (
+            // Empty State
+            <p className="text-gray-500 italic text-center mt-10">
+              No events found.
+            </p>
+          ) : (
+            //  Event Cards
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sortedEvents.slice(0, visibleCount).map((event) => (
                 <EventCard
                   key={event.id}
                   title={event.name}
@@ -167,10 +165,10 @@ export default function EntertainmentPage() {
                   image={event.images?.[0]?.url || "/cat-entertainment.jpg"}
                   url={event.url}
                 />
-              ))
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Infinite Scroll Trigger */}
         {!loading && visibleCount < sortedEvents.length && (
