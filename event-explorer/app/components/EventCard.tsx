@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Star } from "lucide-react";
 
 interface EventCardProps {
@@ -23,14 +24,21 @@ export default function EventCard({
     <div className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
       {/* image + star + Badge */}
       <div className="relative">
-        <img
+       
+        <Image
           src={image || "/placeholder.jpg"}
           alt={title || "Event image"}
+          width={400}
+          height={200}
           className="w-full h-40 object-cover bg-gray-200"
+          priority={false}
+          unoptimized={false}
         />
+
         <button className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100">
           <Star size={18} className="text-gray-500" />
         </button>
+
         {category ? (
           <span className="absolute bottom-0 left-0 text-xs font-medium bg-yellow-400 text-gray-800 px-2 py-1 rounded-tr-lg">
             {category}
