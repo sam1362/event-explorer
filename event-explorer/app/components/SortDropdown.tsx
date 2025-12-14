@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 interface SortDropdownProps {
   onChange?: (sort: string) => void;
 }
+
 const options = [
   "Date (ascending)",
   "Date (descending)",
@@ -16,25 +17,23 @@ const options = [
 export default function SortDropdown({
   onChange = () => {},
 }: SortDropdownProps) {
-  
   const [selectedSort, setSelectedSort] = useState("");
 
+  const handleSelect = (sort: string | null) => {
+    if (!sort) return;
+    setSelectedSort(sort);
+    onChange(sort);
+  };
 
   return (
     <div className="w-[220px]">
-      <Combobox
-        value={selectedSort}
-        onChange={(sort: string) => {
-          setSelectedSort(sort);
-          onChange(sort);
-        }}
-      >
+      <Combobox value={selectedSort} onChange={handleSelect}>
         <div className="relative">
           {/* input */}
           <Combobox.Input
             className="w-full border rounded-lg px-4 py-2 pr-10"
             displayValue={(sort: string) => sort}
-            placeholder="Sort by..." 
+            placeholder="Sort by..."
           />
 
           {/* arrow */}

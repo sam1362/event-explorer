@@ -1,11 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
- 
   images: {
-    domains: [
-      "s1.ticketm.net",           // Ticketmaster main
-      "media.ticketmaster.com",   // Ticketmaster CDN
-      "images.universe.com",      // Universe (partner platform)
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s1.ticketm.net", // Ticketmaster main
+      },
+      {
+        protocol: "https",
+        hostname: "media.ticketmaster.com", // Ticketmaster CDN
+      },
+      {
+        protocol: "https",
+        hostname: "images.universe.com", // Universe (partner platform)
+      },
     ],
   },
 
@@ -21,4 +29,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
