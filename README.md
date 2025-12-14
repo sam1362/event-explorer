@@ -58,7 +58,7 @@ dotnet run
 ```
 
 By default, the API runs on:
-`https://localhost:5001`
+`https://localhost:5080`
 
 Example endpoints:
 
@@ -128,11 +128,11 @@ npm test
 npm install --save-dev jest @testing-library/react @testing-library/jest-dom
 ```
 
-* **CategoryCard.test** → Positive tests  
+* **CategoryCard.test** → Happy tests  
   * Confirms the component renders correctly with given props (title + image).  
   * Confirms clicking the card triggers navigation via `router.push()`.
 
-* **NegativeCategoryCard.test** → Negative tests  
+* **NegativeCategoryCard.test** → EdgeCase tests  
   * Verifies the component behaves gracefully when props are missing or invalid (e.g., no image or empty title).
 
 ---
